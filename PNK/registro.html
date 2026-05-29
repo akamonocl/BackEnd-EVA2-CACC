@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - PNK Inmobiliaria</title>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        /* Fondo con imagen */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url('assets/fondo_pnk.png');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        /* Contenedor con fondo blanco translúcido */
+        .register-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 550px;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            backdrop-filter: blur(3px);
+        }
+        
+        .logo { text-align: center; margin-bottom: 30px; }
+        .logo i { font-size: 50px; color: #1a2a6c; }
+        .logo h2 { color: #1a2a6c; }
+        .logo p { color: #666; }
+        
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; }
+        label .required { color: #e74c3c; }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 14px;
+            background: white;
+        }
+        input:focus { outline: none; border-color: #1a2a6c; }
+        
+        .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        
+        button {
+            width: 100%;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        button:hover { opacity: 0.9; }
+        
+        small { display: block; margin-top: 5px; font-size: 11px; color: #888; }
+        
+        .login-link { text-align: center; margin-top: 20px; }
+        .login-link a { color: #1a2a6c; text-decoration: none; }
+        
+        @media (max-width: 550px) { .row-2 { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="logo">
+            <i class="fas fa-user-plus"></i>
+            <h2>Crear Cuenta</h2>
+            <p>Regístrate como Gestor Inmobiliario - PNK</p>
+        </div>
+        <form id="formRegistro" enctype="multipart/form-data">
+            <div class="row-2">
+                <div class="form-group">
+                    <label>RUT <span class="required">*</span></label>
+                    <input type="text" id="rut" placeholder="12.345.678-9" required>
+                </div>
+                <div class="form-group">
+                    <label>Nombre Completo <span class="required">*</span></label>
+                    <input type="text" id="nombreCompleto" required>
+                </div>
+            </div>
+            <div class="row-2">
+                <div class="form-group">
+                    <label>Fecha Nacimiento <span class="required">*</span></label>
+                    <input type="date" id="fechaNacimiento" required>
+                </div>
+                <div class="form-group">
+                    <label>Sexo <span class="required">*</span></label>
+                    <select id="sexo" required>
+                        <option value="">Seleccione</option>
+                        <option value="Masculino">Masculino</option>
+                        <option value="Femenino">Femenino</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Correo Electrónico <span class="required">*</span></label>
+                <input type="email" id="correo" placeholder="ejemplo@dominio.com" required>
+            </div>
+            <div class="form-group">
+                <label>Contraseña <span class="required">*</span></label>
+                <input type="password" id="contrasena" required>
+                <small>Mínimo 8 caracteres, 1 mayúscula, 1 minúscula, 1 carácter especial</small>
+            </div>
+            <div class="row-2">
+                <div class="form-group">
+                    <label>Teléfono <span class="required">*</span></label>
+                    <input type="tel" id="telefono" placeholder="912345678" required>
+                </div>
+                <div class="form-group">
+                    <label>Certificado (PDF) <span class="required">*</span></label>
+                    <input type="file" id="certificado" accept=".pdf" required>
+                </div>
+            </div>
+            <button type="submit"><i class="fas fa-user-check"></i> Registrarme</button>
+        </form>
+        <div class="login-link">
+            <a href="login.html">¿Ya tienes cuenta? Inicia sesión</a>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function validarRUT(rut) {
+            let rutLimpio = rut.replace(/\./g, '').replace(/-/g, '');
+            if (rutLimpio.length < 8) return false;
+            const cuerpo = rutLimpio.slice(0, -1);
+            const dv = rutLimpio.slice(-1).toUpperCase();
+            let suma = 0, multiplo = 2;
+            for (let i = cuerpo.length - 1; i >= 0; i--) {
+                suma += parseInt(cuerpo.charAt(i)) * multiplo;
+                multiplo = multiplo < 7 ? multiplo + 1 : 2;
+            }
+            const dvEsperado = 11 - (suma % 11);
+            const dvCalculado = dvEsperado === 11 ? '0' : dvEsperado === 10 ? 'K' : dvEsperado.toString();
+            return dv === dvCalculado;
+        }
+
+        document.getElementById('rut').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\./g, '').replace(/-/g, '');
+            if (value.length > 1) {
+                if (value.length <= 8) {
+                    e.target.value = value.replace(/^(\d{1,2})(\d{3})(\d{3})$/, '$1.$2.$3');
+                } else {
+                    e.target.value = value.replace(/^(\d{1,2})(\d{3})(\d{3})(\w{1})$/, '$1.$2.$3-$4');
+                }
+            }
+        });
+
+        document.getElementById('formRegistro').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const rut = document.getElementById('rut').value;
+            const nombre = document.getElementById('nombreCompleto').value;
+            const correo = document.getElementById('correo').value;
+            const contrasena = document.getElementById('contrasena').value;
+            const telefono = document.getElementById('telefono').value;
+            const certificado = document.getElementById('certificado').files[0];
+
+            if (!rut || !nombre || !correo || !contrasena || !telefono || !certificado) {
+                Swal.fire('Error', 'Todos los campos son obligatorios', 'error');
+                return;
+            }
+            if (!validarRUT(rut)) {
+                Swal.fire('Error', 'RUT inválido', 'error');
+                return;
+            }
+            const passRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
+            if (!passRegex.test(contrasena)) {
+                Swal.fire('Error', 'La contraseña no cumple los requisitos', 'error');
+                return;
+            }
+            if (!/^\d{9}$/.test(telefono)) {
+                Swal.fire('Error', 'Teléfono debe tener 9 dígitos', 'error');
+                return;
+            }
+            if (certificado.type !== 'application/pdf') {
+                Swal.fire('Error', 'El certificado debe ser PDF', 'error');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('rut', rut);
+            formData.append('nombreCompleto', nombre);
+            formData.append('fechaNacimiento', document.getElementById('fechaNacimiento').value);
+            formData.append('correo', correo);
+            formData.append('contrasena', contrasena);
+            formData.append('sexo', document.getElementById('sexo').value);
+            formData.append('telefono', telefono);
+            formData.append('certificado', certificado);
+
+            fetch('backend/registrarUsuario.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire('¡Registro exitoso!', 'Ahora puedes iniciar sesión', 'success')
+                        .then(() => window.location.href = 'login.html');
+                } else {
+                    Swal.fire('Error', data.error, 'error');
+                }
+            })
+            .catch(error => Swal.fire('Error', 'Error de conexión', 'error'));
+        });
+    </script>
+</body>
+</html>
+

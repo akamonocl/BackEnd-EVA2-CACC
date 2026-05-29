@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publicar Propiedad - PNK Inmobiliaria</title>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/estilo.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url('assets/fondo_pnk.png');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        .form-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            backdrop-filter: blur(3px);
+        }
+        
+        .form-card h2 {
+            color: #1a2a6c;
+            margin-bottom: 25px;
+            border-left: 4px solid #fdbb4d;
+            padding-left: 15px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .required {
+            color: #e74c3c;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #1a2a6c;
+        }
+        
+        input[readonly] {
+            background: #f0f0f0;
+        }
+        
+        .row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 10px;
+        }
+        
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: normal;
+            cursor: pointer;
+        }
+        
+        .checkbox-group input[type="number"] {
+            width: 70px;
+            padding: 8px;
+        }
+        
+        /* ========== GALERÍA MEJORADA ========== */
+        .gallery-section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+            border: 1px dashed #ddd;
+        }
+        
+        .gallery-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 10px;
+            min-height: 100px;
+        }
+        
+        .gallery-image {
+            width: 100px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .gallery-image:hover {
+            transform: scale(1.05);
+            border-color: #fdbb4d;
+        }
+        
+        /* Imagen principal destacada */
+        .gallery-image.principal {
+            border: 3px solid #fdbb4d;
+            box-shadow: 0 0 10px rgba(253, 187, 77, 0.5);
+        }
+        
+        /* Contenedor de imagen con botón eliminar */
+        .image-container {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .btn-remove-image {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .btn-remove-image:hover {
+            background: #c0392b;
+            transform: scale(1.1);
+        }
+        
+        /* Imagen por defecto */
+        .image-container.default {
+            opacity: 0.7;
+        }
+        
+        /* Contador de imágenes */
+        .image-counter {
+            font-size: 12px;
+            color: #666;
+            margin-top: 10px;
+            text-align: right;
+            padding: 5px;
+        }
+        
+        .image-counter span {
+            font-weight: bold;
+            color: #1a2a6c;
+        }
+        
+        .image-counter.warning {
+            color: #e74c3c;
+        }
+        
+        /* Botón de subida */
+        .btn-upload {
+            display: inline-block;
+            background: #1a2a6c;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            transition: background 0.3s;
+        }
+        
+        .btn-upload:hover {
+            background: #2a3a7c;
+        }
+        
+        button {
+            width: 100%;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            opacity: 0.9;
+        }
+        
+        small {
+            display: block;
+            margin-top: 5px;
+            font-size: 11px;
+            color: #888;
+        }
+        
+        @media (max-width: 600px) {
+            .row-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-card">
+            <h2><i class="fas fa-home"></i> Publicar Propiedad</h2>
+            
+            <form id="formPropiedad" enctype="multipart/form-data">
+                <!-- Tipo de Propiedad -->
+                <div class="form-group">
+                    <label>Tipo de Propiedad <span class="required">*</span></label>
+                    <select id="tipoPropiedad" required>
+                        <option value="">Seleccione...</option>
+                        <option value="Casa">Casa</option>
+                        <option value="Departamento">Departamento</option>
+                        <option value="Terreno">Terreno</option>
+                        <option value="Local Comercial">Local Comercial</option>
+                        <option value="Oficina">Oficina</option>
+                    </select>
+                </div>
+                
+                <!-- GALERÍA DE IMÁGENES ACTUALIZADA -->
+                <div class="form-group">
+                    <label>📸 Fotografías <span class="required">*</span> (1 a 10 fotos)</label>
+                    
+                    <div class="gallery-upload">
+                        <label for="imagenes" class="btn-upload">
+                            <i class="fas fa-cloud-upload-alt"></i> Seleccionar imágenes
+                        </label>
+                        <input type="file" id="imagenes" accept="image/*" multiple style="display: none;">
+                        <small>Formatos permitidos: JPG, PNG, GIF, WEBP. Máximo 10 imágenes.</small>
+                    </div>
+                    
+                    <div class="gallery-section">
+                        <div class="gallery-preview" id="galleryPreview">
+                            <!-- Imagen por defecto -->
+                            <div class="image-container default" data-default="true">
+                                <img src="https://via.placeholder.com/100x80?text=Foto+por+defecto" class="gallery-image default" data-default="true">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="image-counter" id="imageCounter">
+                        <span>0</span> / 10 imágenes seleccionadas
+                    </div>
+                </div>
+                
+                <!-- Descripción -->
+                <div class="form-group">
+                    <label>Descripción <span class="required">*</span></label>
+                    <textarea id="descripcion" rows="3" placeholder="Describe tu propiedad..." required></textarea>
+                </div>
+                
+                <!-- Baños y Dormitorios -->
+                <div class="row-2">
+                    <div class="form-group">
+                        <label>Cantidad de Baños <span class="required">*</span></label>
+                        <input type="number" id="banos" min="0" step="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Cantidad de Dormitorios <span class="required">*</span></label>
+                        <input type="number" id="dormitorios" min="0" step="1" required>
+                    </div>
+                </div>
+                
+                <!-- Áreas -->
+                <div class="row-2">
+                    <div class="form-group">
+                        <label>Área Total del Terreno (m²) <span class="required">*</span></label>
+                        <input type="number" id="areaTerreno" min="0" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Área Construida (m²) <span class="required">*</span></label>
+                        <input type="number" id="areaConstruida" min="0" step="0.01" required>
+                    </div>
+                </div>
+                
+                <!-- Precios -->
+                <div class="row-2">
+                    <div class="form-group">
+                        <label>Precio $ CLP <span class="required">*</span></label>
+                        <input type="number" id="precioCLP" min="0" step="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Precio UF</label>
+                        <input type="number" id="precioUF" step="0.01" readonly>
+                        <small>Se calcula automáticamente (1 UF ≈ $36,000 CLP)</small>
+                    </div>
+                </div>
+                
+                <!-- Fecha de Publicación -->
+                <div class="form-group">
+                    <label>Fecha de Publicación <span class="required">*</span></label>
+                    <input type="date" id="fechaPublicacion" required>
+                </div>
+                
+                <!-- Solicitar Visita -->
+                <div class="form-group">
+                    <label>¿Solicitar una Visita? <span class="required">*</span></label>
+                    <select id="solicitarVisita" required>
+                        <option value="">Seleccione...</option>
+                        <option value="Si">Sí, quiero que me contacten</option>
+                        <option value="No">No por ahora</option>
+                    </select>
+                </div>
+                
+                <!-- Características de la Propiedad -->
+                <div class="form-group">
+                    <label>Características de la Propiedad:</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" id="bodega"> Bodega</label>
+                        <label><input type="number" id="estacionamiento" placeholder="Cant." style="width:80px;"> Estacionamiento(s)</label>
+                        <label><input type="number" id="logia" placeholder="Cant." style="width:80px;"> Logia(s)</label>
+                        <label><input type="checkbox" id="cocinaAmoblada"> Cocina amoblada</label>
+                        <label><input type="number" id="antejardin" placeholder="Metros" style="width:80px;"> Antejardín(m)</label>
+                        <label><input type="number" id="patioTrasero" placeholder="Metros" style="width:80px;"> Patio trasero(m)</label>
+                        <label><input type="checkbox" id="piscina"> Piscina</label>
+                    </div>
+                </div>
+                
+                <button type="submit"><i class="fas fa-save"></i> Publicar Propiedad</button>
+            </form>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Constante UF
+        const UF_VALUE = 36000;
+        const MAX_IMAGENES = 10;
+        let imagenesSeleccionadas = [];
+        
+        // ========== CÁLCULO AUTOMÁTICO DE UF ==========
+        document.getElementById('precioCLP').addEventListener('input', function() {
+            const clp = parseFloat(this.value);
+            if (!isNaN(clp) && clp > 0) {
+                const uf = (clp / UF_VALUE).toFixed(2);
+                document.getElementById('precioUF').value = uf;
+            } else {
+                document.getElementById('precioUF').value = '';
+            }
+        });
+        
+        // ========== FECHA POR DEFECTO (HOY) ==========
+        const hoy = new Date().toISOString().split('T')[0];
+        document.getElementById('fechaPublicacion').value = hoy;
+        
+        // ========== ACTUALIZAR CONTADOR DE IMÁGENES ==========
+        function actualizarContador() {
+            const total = document.querySelectorAll('.image-container:not(.default)').length;
+            const contador = document.getElementById('imageCounter');
+            if (contador) {
+                contador.innerHTML = `<span>${total}</span> / ${MAX_IMAGENES} imágenes seleccionadas`;
+                if (total >= MAX_IMAGENES) {
+                    contador.classList.add('warning');
+                } else {
+                    contador.classList.remove('warning');
+                }
+            }
+        }
+        
+        // ========== MARCAR IMAGEN PRINCIPAL ==========
+        function marcarImagenPrincipal() {
+            const contenedores = document.querySelectorAll('.image-container:not(.default)');
+            // Remover clase principal de todas
+            document.querySelectorAll('.gallery-image').forEach(img => {
+                img.classList.remove('principal');
+            });
+            // Marcar la primera imagen real como principal
+            if (contenedores.length > 0) {
+                const primeraImg = contenedores[0].querySelector('.gallery-image');
+                if (primeraImg) primeraImg.classList.add('principal');
+            }
+        }
+        
+        // ========== ELIMINAR IMAGEN ==========
+        function eliminarImagen(container) {
+            container.remove();
+            actualizarContador();
+            marcarImagenPrincipal();
+            
+            // Si no quedan imágenes, mostrar la imagen por defecto
+            const imagenesRestantes = document.querySelectorAll('.image-container:not(.default)').length;
+            if (imagenesRestantes === 0) {
+                const preview = document.getElementById('galleryPreview');
+                const defaultContainer = document.createElement('div');
+                defaultContainer.className = 'image-container default';
+                defaultContainer.setAttribute('data-default', 'true');
+                defaultContainer.innerHTML = '<img src="https://via.placeholder.com/100x80?text=Foto+por+defecto" class="gallery-image default" data-default="true">';
+                preview.appendChild(defaultContainer);
+            }
+        }
+        
+        // ========== AGREGAR IMAGEN AL PREVIEW ==========
+        function agregarImagenAlPreview(file) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const preview = document.getElementById('galleryPreview');
+                    
+                    // Eliminar la imagen por defecto si existe
+                    const defaultContainer = preview.querySelector('.image-container.default');
+                    if (defaultContainer && document.querySelectorAll('.image-container:not(.default)').length === 0) {
+                        defaultContainer.remove();
+                    }
+                    
+                    // Crear contenedor de imagen
+                    const container = document.createElement('div');
+                    container.className = 'image-container';
+                    
+                    // Crear imagen
+                    const img = document.createElement('img');
+                    img.src = event.target.result;
+                    img.className = 'gallery-image';
+                    img.setAttribute('data-file', file.name);
+                    
+                    // Crear botón eliminar
+                    const btnRemove = document.createElement('button');
+                    btnRemove.innerHTML = '×';
+                    btnRemove.className = 'btn-remove-image';
+                    btnRemove.title = 'Eliminar imagen';
+                    btnRemove.onclick = function() {
+                        eliminarImagen(container);
+                    };
+                    
+                    container.appendChild(img);
+                    container.appendChild(btnRemove);
+                    preview.appendChild(container);
+                    
+                    actualizarContador();
+                    marcarImagenPrincipal();
+                    resolve();
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+        
+        // ========== EVENTO DE SELECCIÓN DE IMÁGENES ==========
+        document.getElementById('imagenes').addEventListener('change', async function(e) {
+            const files = Array.from(e.target.files);
+            const imagenesActuales = document.querySelectorAll('.image-container:not(.default)').length;
+            const totalFinal = imagenesActuales + files.length;
+            
+            // Validar máximo
+            if (totalFinal > MAX_IMAGENES) {
+                Swal.fire('Error', `Máximo ${MAX_IMAGENES} imágenes permitidas. Actualmente tienes ${imagenesActuales} imágenes.`, 'error');
+                this.value = '';
+                return;
+            }
+            
+            // Agregar cada imagen
+            for (const file of files) {
+                await agregarImagenAlPreview(file);
+            }
+            
+            this.value = '';
+        });
+        
+        // ========== VALIDAR GALERÍA ==========
+        function validarGaleria() {
+            const totalImagenes = document.querySelectorAll('.image-container:not(.default)').length;
+            if (totalImagenes === 0) {
+                Swal.fire('Error', 'Debe agregar al menos 1 fotografía de la propiedad', 'error');
+                return false;
+            }
+            if (totalImagenes > MAX_IMAGENES) {
+                Swal.fire('Error', `Máximo ${MAX_IMAGENES} imágenes permitidas`, 'error');
+                return false;
+            }
+            return true;
+        }
+        
+        // ========== OBTENER ARCHIVOS DE IMÁGENES ==========
+        function obtenerArchivosImagenes() {
+            const archivos = [];
+            const contenedores = document.querySelectorAll('.image-container:not(.default)');
+            
+            // Recorrer contenedores para obtener los archivos
+            // Nota: Para simplificar, en el envío se usarán los archivos originales del input
+            // Esta función es solo para referencia
+            return archivos;
+        }
+        
+        // ========== VALIDACIONES DEL FORMULARIO ==========
+        document.getElementById('formPropiedad').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validar galería primero
+            if (!validarGaleria()) {
+                return;
+            }
+            
+            // Obtener valores
+            const tipo = document.getElementById('tipoPropiedad').value;
+            const descripcion = document.getElementById('descripcion').value;
+            const banos = document.getElementById('banos').value;
+            const dormitorios = document.getElementById('dormitorios').value;
+            const areaTerreno = document.getElementById('areaTerreno').value;
+            const areaConstruida = document.getElementById('areaConstruida').value;
+            const precioCLP = document.getElementById('precioCLP').value;
+            const precioUF = document.getElementById('precioUF').value;
+            const fechaPub = document.getElementById('fechaPublicacion').value;
+            const solicitarVisita = document.getElementById('solicitarVisita').value;
+            
+            // Validar campos obligatorios
+            if (!tipo) { Swal.fire('Error', 'Tipo de Propiedad es obligatorio', 'error'); return; }
+            if (!descripcion) { Swal.fire('Error', 'Descripción es obligatoria', 'error'); return; }
+            if (!banos || isNaN(banos)) { Swal.fire('Error', 'Cantidad de Baños debe ser numérico', 'error'); return; }
+            if (!dormitorios || isNaN(dormitorios)) { Swal.fire('Error', 'Cantidad de Dormitorios debe ser numérico', 'error'); return; }
+            if (!areaTerreno || isNaN(areaTerreno)) { Swal.fire('Error', 'Área Total del Terreno debe ser numérico', 'error'); return; }
+            if (!areaConstruida || isNaN(areaConstruida)) { Swal.fire('Error', 'Área Construida debe ser numérico', 'error'); return; }
+            if (!precioCLP || isNaN(precioCLP)) { Swal.fire('Error', 'Precio en CLP debe ser numérico', 'error'); return; }
+            if (!precioUF || isNaN(precioUF)) { Swal.fire('Error', 'Precio en UF es obligatorio', 'error'); return; }
+            if (!fechaPub) { Swal.fire('Error', 'Fecha de Publicación es obligatoria', 'error'); return; }
+            if (!solicitarVisita) { Swal.fire('Error', 'Debe indicar si solicita visita', 'error'); return; }
+            
+            // Validar características numéricas
+            const estacionamiento = document.getElementById('estacionamiento').value;
+            const logia = document.getElementById('logia').value;
+            const antejardin = document.getElementById('antejardin').value;
+            const patioTrasero = document.getElementById('patioTrasero').value;
+            
+            if (estacionamiento === '' || isNaN(estacionamiento)) {
+                Swal.fire('Error', 'Estacionamiento debe ser un número', 'error');
+                return;
+            }
+            if (logia === '' || isNaN(logia)) {
+                Swal.fire('Error', 'Logia debe ser un número', 'error');
+                return;
+            }
+            if (antejardin === '' || isNaN(antejardin)) {
+                Swal.fire('Error', 'Antejardín debe ser un número', 'error');
+                return;
+            }
+            if (patioTrasero === '' || isNaN(patioTrasero)) {
+                Swal.fire('Error', 'Patio trasero debe ser un número', 'error');
+                return;
+            }
+            
+            // Crear FormData para enviar
+            const formData = new FormData();
+            formData.append('tipoPropiedad', tipo);
+            formData.append('descripcion', descripcion);
+            formData.append('banos', banos);
+            formData.append('dormitorios', dormitorios);
+            formData.append('areaTerreno', areaTerreno);
+            formData.append('areaConstruida', areaConstruida);
+            formData.append('precioCLP', precioCLP);
+            formData.append('precioUF', precioUF);
+            formData.append('fechaPublicacion', fechaPub);
+            formData.append('solicitarVisita', solicitarVisita);
+            formData.append('bodega', document.getElementById('bodega').checked ? 1 : 0);
+            formData.append('estacionamiento', estacionamiento);
+            formData.append('logia', logia);
+            formData.append('cocinaAmoblada', document.getElementById('cocinaAmoblada').checked ? 1 : 0);
+            formData.append('antejardin', antejardin);
+            formData.append('patioTrasero', patioTrasero);
+            formData.append('piscina', document.getElementById('piscina').checked ? 1 : 0);
+            
+            // Agregar imágenes desde el input file original
+            const imagenesInput = document.getElementById('imagenes');
+            if (imagenesInput.files.length > 0) {
+                for (let i = 0; i < imagenesInput.files.length; i++) {
+                    formData.append('imagenes[]', imagenesInput.files[i]);
+                }
+            } else {
+                // Si no hay archivos nuevos, usar los que están en el preview (requiere implementación adicional)
+                console.log('No hay imágenes nuevas seleccionadas');
+            }
+            
+            // Mostrar loading
+            Swal.fire({
+                title: 'Publicando propiedad...',
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            });
+            
+            // Enviar al backend
+            fetch('backend/registrarPropiedad.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire('¡Éxito!', 'Propiedad publicada correctamente', 'success')
+                        .then(() => {
+                            window.location.href = 'dashboard.html';
+                        });
+                } else {
+                    Swal.fire('Error', data.error || 'Error al publicar', 'error');
+                }
+            })
+            .catch(error => {
+                Swal.fire('Error', 'Error de conexión con el servidor', 'error');
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>

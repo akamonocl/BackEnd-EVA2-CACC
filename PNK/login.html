@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - PNK Inmobiliaria</title>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/estilo.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        /* Fondo con imagen */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url('assets/fondo_pnk.png');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* Contenedor con fondo blanco translúcido */
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: fadeIn 0.5s ease;
+            backdrop-filter: blur(3px);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Logo con imagen */
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo-img {
+            height: 70px;
+            width: auto;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+        .logo h2 {
+            color: #1a2a6c;
+            margin-top: 10px;
+            font-size: 1.5rem;
+        }
+        .logo h2 span {
+            color: #fdbb4d;
+        }
+        .logo p {
+            color: #666;
+            font-size: 12px;
+        }
+        
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        input:focus { 
+            outline: none; 
+            border-color: #1a2a6c;
+            box-shadow: 0 0 0 3px rgba(26,42,108,0.1);
+        }
+        
+        /* Input inválido */
+        input.invalid {
+            border-color: #e74c3c;
+        }
+        
+        /* Indicador de fortaleza de contraseña */
+        .password-strength {
+            margin-top: 8px;
+            font-size: 12px;
+        }
+        .strength-bar {
+            height: 4px;
+            border-radius: 2px;
+            margin-top: 5px;
+            transition: all 0.3s;
+        }
+        .strength-weak { background: #e74c3c; width: 25%; }
+        .strength-medium { background: #fdbb4d; width: 50%; }
+        .strength-strong { background: #28a745; width: 75%; }
+        .strength-very-strong { background: #1a2a6c; width: 100%; }
+        
+        /* Requisitos de contraseña */
+        .requisitos {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 11px;
+        }
+        .requisitos p {
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        .requisitos ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .requisitos li {
+            margin-bottom: 3px;
+            color: #888;
+        }
+        .requisitos li.valid {
+            color: #28a745;
+        }
+        .requisitos li.invalid {
+            color: #e74c3c;
+        }
+        
+        button {
+            width: 100%;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        button:hover { 
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        .register-link { text-align: center; margin-top: 20px; }
+        .register-link a { color: #1a2a6c; text-decoration: none; }
+        .back-home { text-align: center; margin-top: 15px; }
+        .back-home a { color: #666; text-decoration: none; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <img src="assets/pnk.png" alt="PNK Inmobiliaria" class="logo-img">
+            <h2>PNK <span>INMOBILIARIA</span></h2>
+        </div>
+        <form id="formLogin">
+            <div class="form-group">
+                <label>Correo Electrónico</label>
+                <input type="email" id="loginCorreo" placeholder="ejemplo@dominio.com" required>
+            </div>
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" id="loginPassword" placeholder="Ingrese su contraseña" required>
+                
+                <!-- Barra de fortaleza -->
+                <div class="password-strength">
+                    <div class="strength-bar" id="strengthBar"></div>
+                </div>
+            </div>
+            
+            <!-- Requisitos de contraseña -->
+            <div class="requisitos" id="requisitos">
+                <p>La contraseña debe cumplir con:</p>
+                <ul>
+                    <li id="reqLength">❌ Mínimo 8 caracteres</li>
+                    <li id="reqUpper">❌ Al menos una letra mayúscula</li>
+                    <li id="reqLower">❌ Al menos una letra minúscula</li>
+                    <li id="reqSpecial">❌ Al menos un carácter especial (!@#$%^&*)</li>
+                </ul>
+            </div>
+            
+            <button type="submit"><i class="fas fa-sign-in-alt"></i> Iniciar Sesión</button>
+        </form>
+        <div class="register-link">
+            <a href="registro.html">¿No tienes cuenta? Regístrate aquí</a>
+        </div>
+        <div class="back-home">
+            <a href="index.html"><i class="fas fa-arrow-left"></i> Volver al inicio</a>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // ============================================
+        // VALIDACIÓN DE CONTRASEÑA ROBUSTA (5 PTS)
+        // ============================================
+        
+        function validarContrasenaRobusta(contrasena) {
+            const requisitos = {
+                length: contrasena.length >= 8,
+                upper: /[A-Z]/.test(contrasena),
+                lower: /[a-z]/.test(contrasena),
+                special: /[!@#$%^&*]/.test(contrasena)
+            };
+            
+            const esValida = requisitos.length && requisitos.upper && requisitos.lower && requisitos.special;
+            
+            return {
+                isValid: esValida,
+                requisitos: requisitos
+            };
+        }
+        
+        // ============================================
+        // VALIDACIÓN DE CORREO ELECTRÓNICO (6 PTS)
+        // ============================================
+        
+        function validarEmail(email) {
+            // 1. Solo 1 símbolo @ (2 pts)
+            const partes = email.split('@');
+            if (partes.length !== 2) return false;
+            
+            // 2. Mínimo 3 caracteres antes del símbolo @ (2 pts)
+            if (partes[0].length < 3) return false;
+            
+            // 3. Al menos 1 punto después del símbolo @ (2 pts)
+            if (!partes[1].includes('.')) return false;
+            
+            // Validación adicional: dominio válido
+            if (partes[1].length < 3) return false;
+            
+            return true;
+        }
+        
+        // ============================================
+        // ACTUALIZAR REQUISITOS EN TIEMPO REAL
+        // ============================================
+        
+        function actualizarRequisitos(contrasena) {
+            const resultado = validarContrasenaRobusta(contrasena);
+            const reqs = resultado.requisitos;
+            
+            const reqLength = document.getElementById('reqLength');
+            const reqUpper = document.getElementById('reqUpper');
+            const reqLower = document.getElementById('reqLower');
+            const reqSpecial = document.getElementById('reqSpecial');
+            
+            if (reqLength) {
+                reqLength.innerHTML = reqs.length ? '✅ Mínimo 8 caracteres' : '❌ Mínimo 8 caracteres';
+                reqLength.className = reqs.length ? 'valid' : 'invalid';
+            }
+            if (reqUpper) {
+                reqUpper.innerHTML = reqs.upper ? '✅ Al menos una letra mayúscula' : '❌ Al menos una letra mayúscula';
+                reqUpper.className = reqs.upper ? 'valid' : 'invalid';
+            }
+            if (reqLower) {
+                reqLower.innerHTML = reqs.lower ? '✅ Al menos una letra minúscula' : '❌ Al menos una letra minúscula';
+                reqLower.className = reqs.lower ? 'valid' : 'invalid';
+            }
+            if (reqSpecial) {
+                reqSpecial.innerHTML = reqs.special ? '✅ Al menos un carácter especial (!@#$%^&*)' : '❌ Al menos un carácter especial (!@#$%^&*)';
+                reqSpecial.className = reqs.special ? 'valid' : 'invalid';
+            }
+            
+            // Actualizar barra de fortaleza
+            let fuerza = 0;
+            if (reqs.length) fuerza++;
+            if (reqs.upper) fuerza++;
+            if (reqs.lower) fuerza++;
+            if (reqs.special) fuerza++;
+            
+            const strengthBar = document.getElementById('strengthBar');
+            if (strengthBar) {
+                strengthBar.className = 'strength-bar';
+                if (fuerza === 0 || fuerza === 1) {
+                    strengthBar.classList.add('strength-weak');
+                } else if (fuerza === 2) {
+                    strengthBar.classList.add('strength-medium');
+                } else if (fuerza === 3) {
+                    strengthBar.classList.add('strength-strong');
+                } else if (fuerza >= 4) {
+                    strengthBar.classList.add('strength-very-strong');
+                }
+            }
+            
+            return resultado;
+        }
+        
+        // ============================================
+        // VALIDAR CORREO EN TIEMPO REAL
+        // ============================================
+        
+        function validarCorreoEnTiempoReal(correo) {
+            const inputCorreo = document.getElementById('loginCorreo');
+            if (correo && !validarEmail(correo)) {
+                inputCorreo.classList.add('invalid');
+                return false;
+            } else {
+                inputCorreo.classList.remove('invalid');
+                return true;
+            }
+        }
+        
+        // ============================================
+        // EVENTOS EN TIEMPO REAL
+        // ============================================
+        
+        document.getElementById('loginPassword')?.addEventListener('input', function(e) {
+            actualizarRequisitos(e.target.value);
+        });
+        
+        document.getElementById('loginCorreo')?.addEventListener('input', function(e) {
+            validarCorreoEnTiempoReal(e.target.value);
+        });
+        
+        // ============================================
+        // ENVÍO DEL FORMULARIO
+        // ============================================
+        
+        document.getElementById('formLogin').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const correo = document.getElementById('loginCorreo').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            // Validar campos no vacíos (2 pts)
+            if (!correo || !password) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Campos incompletos',
+                    text: 'Por favor, complete todos los campos',
+                    confirmButtonColor: '#fdbb4d'
+                });
+                return;
+            }
+            
+            // VALIDACIÓN DE CORREO ELECTRÓNICO (6 pts)
+            if (!validarEmail(correo)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Correo inválido',
+                    text: 'El correo debe tener:\n- Solo 1 símbolo @\n- Mínimo 3 caracteres antes del @\n- Al menos 1 punto después del @',
+                    confirmButtonColor: '#e74c3c'
+                });
+                return;
+            }
+            
+            // VALIDACIÓN DE CONTRASEÑA ROBUSTA (5 pts)
+            const resultado = validarContrasenaRobusta(password);
+            
+            if (!resultado.isValid) {
+                let mensaje = 'La contraseña no cumple con los requisitos de seguridad:\n';
+                if (!resultado.requisitos.length) mensaje += '❌ Mínimo 8 caracteres\n';
+                if (!resultado.requisitos.upper) mensaje += '❌ Al menos una letra mayúscula\n';
+                if (!resultado.requisitos.lower) mensaje += '❌ Al menos una letra minúscula\n';
+                if (!resultado.requisitos.special) mensaje += '❌ Al menos un carácter especial (!@#$%^&*)\n';
+                
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Contraseña débil',
+                    text: mensaje,
+                    confirmButtonColor: '#e74c3c'
+                });
+                return;
+            }
+            
+            // Mostrar loading
+            Swal.fire({
+                title: 'Iniciando sesión...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            
+            // Enviar al backend
+            fetch('backend/login.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ correo, password })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Bienvenido!',
+                        text: 'Inicio de sesión exitoso',
+                        confirmButtonColor: '#28a745'
+                    }).then(() => window.location.href = 'dashboard.html');
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Acceso denegado',
+                        text: data.error || 'Usuario o contraseña incorrectos',
+                        confirmButtonColor: '#e74c3c'
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de conexión',
+                    text: 'No se pudo conectar con el servidor',
+                    confirmButtonColor: '#e74c3c'
+                });
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>

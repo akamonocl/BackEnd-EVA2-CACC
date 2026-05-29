@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de Propiedad - Portal Inmobiliario PNK</title>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f7fb; }
+        
+        .header {
+            background: #1a1a2e;
+            color: white;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header a { color: white; text-decoration: none; margin-left: 20px; }
+        .logo { font-size: 1.5rem; font-weight: bold; }
+        .logo span { color: #fdbb4d; }
+        
+        .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+        
+        .back-link { margin-bottom: 20px; }
+        .back-link a { color: #1a2a6c; text-decoration: none; }
+        
+        .property-detail {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        .main-image {
+            width: 100%;
+            height: 400px;
+            background-size: cover;
+            background-position: center;
+        }
+        .detail-content { padding: 30px; }
+        .price {
+            font-size: 2rem;
+            color: #1a2a6c;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .title { font-size: 1.5rem; margin-bottom: 10px; }
+        .location { color: #666; margin-bottom: 20px; }
+        .features {
+            display: flex;
+            gap: 30px;
+            padding: 20px 0;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 20px;
+        }
+        .feature { text-align: center; }
+        .feature i { font-size: 1.5rem; color: #1a2a6c; }
+        .description { line-height: 1.6; color: #444; margin-bottom: 20px; }
+        .contact-btn {
+            background: #fdbb4d;
+            color: #1a2a6c;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+        .footer { background: #1a1a2e; color: white; padding: 30px; text-align: center; margin-top: 50px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">Portal<span>Inmobiliario</span></div>
+        <div>
+            <a href="index.html">Inicio</a>
+            <a href="propiedades.html">Propiedades</a>
+            <a href="login.html">Ingresar</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="back-link">
+            <a href="propiedades.html"><i class="fas fa-arrow-left"></i> Volver a propiedades</a>
+        </div>
+        
+        <div class="property-detail" id="detalleContainer">
+            <div style="text-align: center; padding: 60px;">Cargando información de la propiedad...</div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>Portal Inmobiliario de Chile - Encuentra tu hogar</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
+        
+        if (!id) {
+            window.location.href = 'propiedades.html';
+        }
+        
+        fetch(`backend/detallePropiedad.php?id=${id}`)
+            .then(res => res.json())
+            .then(prop => {
+                const container = document.getElementById('detalleContainer');
+                container.innerHTML = `
+                    <div class="main-image" style="background-image: url('${prop.imagen_principal || 'https://via.placeholder.com/1100x400?text=Propiedad'}')"></div>
+                    <div class="detail-content">
+                        <div class="price">${prop.precio_uf ? 'UF ' + prop.precio_uf : '$' + Number(prop.precio_clp).toLocaleString()}</div>
+                        <div class="title">${prop.tipo || 'Propiedad'} en ${prop.comuna || 'Chile'}</div>
+                        <div class="location"><i class="fas fa-map-marker-alt"></i> ${prop.comuna || ''}, ${prop.provincia || ''} - ${prop.sector || ''}</div>
+                        <div class="features">
+                            <div class="feature"><i class="fas fa-bed"></i><br>${prop.dormitorios || 0} Dormitorios</div>
+                            <div class="feature"><i class="fas fa-bath"></i><br>${prop.banos || 0} Baños</div>
+                            <div class="feature"><i class="fas fa-ruler-combined"></i><br>${prop.area_terreno || 0} m²</div>
+                            <div class="feature"><i class="fas fa-building"></i><br>${prop.area_construida || 0} m² constr.</div>
+                        </div>
+                        <div class="description">
+                            <h3>Descripción</h3>
+                            <p>${prop.descripcion || 'Sin descripción disponible.'}</p>
+                        </div>
+                        <div class="description">
+                            <h3>Características</h3>
+                            <ul>
+                                ${prop.bodega ? '<li>✅ Bodega</li>' : ''}
+                                ${prop.estacionamiento > 0 ? '<li>🚗 ' + prop.estacionamiento + ' Estacionamiento(s)</li>' : ''}
+                                ${prop.logia > 0 ? '<li>🏠 ' + prop.logia + ' Logia(s)</li>' : ''}
+                                ${prop.cocina_amoblada ? '<li>🍳 Cocina amoblada</li>' : ''}
+                                ${prop.piscina ? '<li>🏊 Piscina</li>' : ''}
+                            </ul>
+                        </div>
+                        <button class="contact-btn" onclick="contactar()"><i class="fas fa-phone"></i> Solicitar más información</button>
+                    </div>
+                `;
+            })
+            .catch(error => {
+                document.getElementById('detalleContainer').innerHTML = '<div style="text-align:center; padding:60px;">Error al cargar la propiedad</div>';
+            });
+        
+        function contactar() {
+            Swal.fire({
+                title: 'Contactar al vendedor',
+                text: 'Déjanos tus datos y te contactaremos',
+                icon: 'info',
+                confirmButtonText: 'Solicitar contacto'
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto - Portal Inmobiliario PNK</title>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f7fb; }
+        .header { background: #1a1a2e; color: white; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; }
+        .header a { color: white; text-decoration: none; margin-left: 20px; }
+        .logo { font-size: 1.5rem; font-weight: bold; }
+        .logo span { color: #fdbb4d; }
+        .container { max-width: 800px; margin: 50px auto; padding: 0 20px; }
+        .card { background: white; border-radius: 20px; padding: 40px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+        button {
+            background: #1a2a6c;
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+        .info-contacto { margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; display: flex; gap: 30px; justify-content: center; }
+        .info-item { text-align: center; }
+        .info-item i { font-size: 2rem; color: #1a2a6c; }
+        .footer { background: #1a1a2e; color: white; padding: 30px; text-align: center; margin-top: 50px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">Portal<span>Inmobiliario</span></div>
+        <div><a href="index.html">Inicio</a><a href="propiedades.html">Propiedades</a><a href="contacto.html">Contacto</a></div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h2><i class="fas fa-envelope"></i> Contáctanos</h2>
+            <p style="margin-bottom: 20px;">¿Tienes preguntas? Escríbenos y te responderemos a la brevedad.</p>
+            <form id="formContacto">
+                <div class="form-group">
+                    <label>Nombre Completo</label>
+                    <input type="text" id="nombre" required>
+                </div>
+                <div class="form-group">
+                    <label>Correo Electrónico</label>
+                    <input type="email" id="correo" required>
+                </div>
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <input type="tel" id="telefono">
+                </div>
+                <div class="form-group">
+                    <label>Mensaje</label>
+                    <textarea id="mensaje" rows="5" required></textarea>
+                </div>
+                <button type="submit"><i class="fas fa-paper-plane"></i> Enviar Mensaje</button>
+            </form>
+            
+            <div class="info-contacto">
+                <div class="info-item"><i class="fas fa-phone"></i><br><strong>Teléfono</strong><br>+56 2 1234 5678</div>
+                <div class="info-item"><i class="fas fa-envelope"></i><br><strong>Email</strong><br>contacto@InmobilarioPNK.cl</div>
+                <div class="info-item"><i class="fas fa-map-marker-alt"></i><br><strong>Dirección</strong><br>Av. Amunategui 1234, La Serena</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer"><p>Portal Inmobiliario PNK - Encuentra tu hogar</p></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.getElementById('formContacto').addEventListener('submit', function(e) {
+            e.preventDefault();
+            Swal.fire('¡Mensaje Enviado!', 'Nos pondremos en contacto contigo pronto', 'success');
+            this.reset();
+        });
+    </script>
+</body>
+</html>

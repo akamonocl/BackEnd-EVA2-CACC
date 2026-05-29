@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PNK Inmobiliaria - Encuentra tu hogar</title>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/estilo.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        /* Fondo con imagen para toda la página */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url('assets/fondo_pnk.png');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+        }
+        
+        /* TOP BAR */
+        .top-bar {
+            background: rgba(26, 26, 46, 0.95);
+            color: white;
+            padding: 10px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            backdrop-filter: blur(5px);
+        }
+        .top-bar a { color: white; text-decoration: none; margin-left: 20px; }
+        .top-bar a:hover { color: #fdbb4d; }
+        .btn-publicar-top { background: #fdbb4d; color: #1a2a6c !important; padding: 8px 20px; border-radius: 30px; font-weight: bold; }
+        
+        /* HEADER */
+        .main-header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            backdrop-filter: blur(3px);
+        }
+        
+        /* Logo con imagen */
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .logo-img {
+            height: 50px;
+            width: auto;
+            object-fit: contain;
+        }
+        .logo-text h1 {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin: 0;
+            line-height: 1.2;
+            color: #1a2a6c;
+        }
+        .logo-text h1 span {
+            color: #fdbb4d;
+        }
+        .logo-text p {
+            font-size: 0.7rem;
+            margin: 0;
+            color: #888;
+        }
+        
+        .nav-links { display: flex; gap: 30px; align-items: center; }
+        .nav-links a { text-decoration: none; color: #333; font-weight: 500; }
+        
+        /* HERO */
+        .hero {
+            background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('assets/fondo_pnk.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            padding: 80px 40px;
+            text-align: center;
+            color: white;
+        }
+        .hero h2 { font-size: 2.5rem; margin-bottom: 15px; }
+        .hero h3 { color: #fdbb4d; font-size: 2rem; margin-bottom: 15px; }
+        
+        /* BARRA DE BÚSQUEDA */
+        .search-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 60px;
+            max-width: 1000px;
+            margin: -30px auto 40px;
+            padding: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            backdrop-filter: blur(3px);
+        }
+        .search-section select, .search-section input {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 50px;
+            background: #f8f9fa;
+        }
+        .search-section button {
+            background: #fdbb4d;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        /* CATEGORÍAS */
+        .categories {
+            max-width: 1200px;
+            margin: 50px auto;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+        .category-item {
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 20px;
+            backdrop-filter: blur(3px);
+        }
+        .category-item:hover { transform: translateY(-5px); }
+        .category-item i {
+            font-size: 2rem;
+            background: white;
+            padding: 20px;
+            border-radius: 50%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            color: #1a2a6c;
+        }
+        .category-item p {
+            margin-top: 10px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        /* PROPIEDADES DESTACADAS */
+        .featured-section {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+        .section-title {
+            font-size: 1.8rem;
+            color: white;
+            margin-bottom: 30px;
+            border-left: 4px solid #fdbb4d;
+            padding-left: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .properties-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        .property-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(2px);
+        }
+        .property-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.15); }
+        .property-image { height: 200px; background-size: cover; background-position: center; position: relative; }
+        .property-price {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            background: #fdbb4d;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #1a2a6c;
+        }
+        .property-info { padding: 15px; }
+        .property-title { font-weight: 600; margin-bottom: 5px; }
+        .property-location { color: #666; font-size: 0.85rem; margin-bottom: 10px; }
+        .property-details { display: flex; gap: 15px; font-size: 0.8rem; color: #888; }
+        
+        /* FOOTER */
+        .footer {
+            background: rgba(26, 26, 46, 0.95);
+            color: white;
+            padding: 40px;
+            margin-top: 60px;
+            backdrop-filter: blur(5px);
+        }
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+        }
+        .footer-section a { color: #ccc; text-decoration: none; display: block; margin-bottom: 8px; }
+        .footer-section a:hover { color: #fdbb4d; }
+        
+        @media (max-width: 768px) {
+            .main-header { flex-direction: column; gap: 15px; text-align: center; }
+            .search-section { flex-direction: column; border-radius: 20px; }
+            .top-bar { flex-direction: column; gap: 10px; text-align: center; }
+            .logo { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <!-- TOP BAR -->
+    <div class="top-bar">
+        <div>🏠 PNK Inmobiliaria - El portal inmobiliario de Chile</div>
+        <div>
+            <a href="registro.html">Crea tu cuenta</a>
+            <a href="login.html">Ingresa</a>
+            <a href="publicar.html" class="btn-publicar-top">📢 Publica tu propiedad</a>
+        </div>
+    </div>
+
+    <!-- HEADER PNK INMOBILIARIA -->
+    <div class="main-header">
+        <div class="logo">
+            <img src="assets/pnk.png" alt="PNK Inmobiliaria" class="logo-img">
+            <div class="logo-text">
+                <h1>PNK <span>INMOBILIARIA</span></h1>
+                <p>El portal inmobiliario de Chile</p>
+            </div>
+        </div>
+        <div class="nav-links">
+            <a href="propiedades.html?tipo=Venta">Venta</a>
+            <a href="propiedades.html?tipo=Arriendo">Arriendo</a>
+            <a href="propiedades.html?tipo=Departamento">Departamentos</a>
+            <a href="propiedades.html?tipo=Casa">Casas</a>
+            <a href="propiedades.html?tipo=Terreno">Terrenos</a>
+        </div>
+    </div>
+
+    <!-- HERO -->
+    <div class="hero">
+        <h2>🏠 ENCUENTRA TU NUEVO HOGAR</h2>
+        <h3>¡OPORTUNIDADES ÚNICAS!</h3>
+        <p>Las mejores propiedades al mejor precio con PNK Inmobiliaria</p>
+    </div>
+
+    <!-- BÚSQUEDA -->
+    <div class="search-section">
+        <select id="searchTipo">
+            <option value="">Venta/Arriendo</option>
+            <option value="Venta">Venta</option>
+            <option value="Arriendo">Arriendo</option>
+        </select>
+        <select id="searchCategoria">
+            <option value="">Tipo</option>
+            <option value="Casa">Casa</option>
+            <option value="Departamento">Departamento</option>
+            <option value="Terreno">Terreno</option>
+        </select>
+        <input type="text" id="searchUbicacion" placeholder="Comuna, ciudad o región">
+        <button onclick="buscar()"><i class="fas fa-search"></i> Buscar</button>
+        <button onclick="window.location.href='buscar.html'"><i class="fas fa-map-marker-alt"></i> Mapa</button>
+    </div>
+
+    <!-- CATEGORÍAS -->
+    <div class="categories">
+        <div class="category-item" onclick="window.location.href='propiedades.html?tipo=Casa'">
+            <i class="fas fa-home"></i><p>Casas</p>
+        </div>
+        <div class="category-item" onclick="window.location.href='propiedades.html?tipo=Departamento'">
+            <i class="fas fa-building"></i><p>Departamentos</p>
+        </div>
+        <div class="category-item" onclick="window.location.href='propiedades.html?tipo=Terreno'">
+            <i class="fas fa-tree"></i><p>Terrenos</p>
+        </div>
+        <div class="category-item" onclick="window.location.href='propiedades.html?tipo=Local'">
+            <i class="fas fa-store"></i><p>Locales</p>
+        </div>
+        <div class="category-item" onclick="window.location.href='propiedades.html?tipo=Oficina'">
+            <i class="fas fa-chart-line"></i><p>Oficinas</p>
+        </div>
+    </div>
+
+    <!-- PROPIEDADES DESTACADAS -->
+    <div class="featured-section">
+        <h2 class="section-title">⭐ Propiedades Destacadas PNK</h2>
+        <div class="properties-grid" id="propiedadesGrid">
+            <div style="text-align: center; padding: 40px; background: rgba(255,255,255,0.9); border-radius: 15px;">Cargando propiedades...</div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>PNK Inmobiliaria</h4>
+                <a href="quienes_somos.html">Quiénes Somos</a>
+            </div>
+            <div class="footer-section">
+                <h4>Propiedades</h4>
+                <a href="propiedades.html?tipo=Venta">Venta</a>
+            <a href="propiedades.html?tipo=Arriendo">Arriendo</a>
+            </div>
+            <div class="footer-section">
+                <h4>Contacto</h4>
+                <a href="#">+56 9 1234 5678</a>
+                <a href="#">contacto@pnkinmobiliaria.cl</a>
+                <a href="#">La Serena, Chile</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+        <p>PNK Inmobiliaria - El portal inmobiliario de Chile</p>
+        <p>© 2026 - Todos los derechos reservados</p>
+    </div>
+</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function buscar() {
+            const tipo = document.getElementById('searchTipo').value;
+            const categoria = document.getElementById('searchCategoria').value;
+            const ubicacion = document.getElementById('searchUbicacion').value;
+            window.location.href = `propiedades.html?tipo=${tipo}&categoria=${categoria}&ubicacion=${ubicacion}`;
+        }
+
+        function cargarDestacadas() {
+            fetch('backend/destacadas.php')
+                .then(res => res.json())
+                .then(data => {
+                    const grid = document.getElementById('propiedadesGrid');
+                    if (data.length === 0) {
+                        grid.innerHTML = '<div style="text-align:center; padding:40px; background:rgba(255,255,255,0.9); border-radius:15px;">No hay propiedades destacadas</div>';
+                        return;
+                    }
+                    grid.innerHTML = '';
+                    data.forEach(prop => {
+                        grid.innerHTML += `
+                            <div class="property-card" onclick="window.location.href='propiedad-detalle.html?id=${prop.id}'">
+                                <div class="property-image" style="background-image: url('${prop.imagen_principal || 'https://via.placeholder.com/400x200?text=PNK+Inmobiliaria'}')">
+                                    <div class="property-price">${prop.precio_uf ? 'UF ' + prop.precio_uf : '$' + Number(prop.precio_clp).toLocaleString()}</div>
+                                </div>
+                                <div class="property-info">
+                                    <div class="property-title">${prop.tipo || 'Propiedad'} en ${prop.comuna || 'Chile'}</div>
+                                    <div class="property-location"><i class="fas fa-map-marker-alt"></i> ${prop.comuna || ''}, ${prop.provincia || ''}</div>
+                                    <div class="property-details">
+                                        <span><i class="fas fa-bed"></i> ${prop.dormitorios || 0} dorm</span>
+                                        <span><i class="fas fa-bath"></i> ${prop.banos || 0} baños</span>
+                                        <span><i class="fas fa-ruler-combined"></i> ${prop.area_terreno || 0} m²</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('propiedadesGrid').innerHTML = '<div style="text-align:center; padding:40px; background:rgba(255,255,255,0.9); border-radius:15px;">Error al cargar propiedades</div>';
+                });
+        }
+        cargarDestacadas();
+    </script>
+</body>
+</html>

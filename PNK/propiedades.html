@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Propiedades - PNK Inmobiliaria</title>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/estilo.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        /* Fondo con imagen */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url('assets/fondo_pnk.png');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: rgba(26, 26, 46, 0.95);
+            color: white;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+        .header a { color: white; text-decoration: none; margin-left: 20px; }
+        .logo { font-size: 1.5rem; font-weight: bold; }
+        .logo span { color: #fdbb4d; }
+        
+        .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+        
+        .filters {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            backdrop-filter: blur(3px);
+        }
+        .filters select, .filters input {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            flex: 1;
+            background: white;
+        }
+        .filters button {
+            background: #1a2a6c;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        .properties-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        .property-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(2px);
+        }
+        .property-card:hover { transform: translateY(-5px); }
+        .property-image { height: 200px; background-size: cover; background-position: center; position: relative; }
+        .property-price {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            background: #fdbb4d;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #1a2a6c;
+        }
+        .property-info { padding: 15px; }
+        .property-title { font-weight: 600; }
+        .property-location { color: #666; font-size: 0.85rem; margin: 5px 0; }
+        .property-details { display: flex; gap: 15px; font-size: 0.8rem; color: #888; }
+        
+        .pagination { display: flex; justify-content: center; gap: 10px; margin-top: 40px; }
+        .pagination button { 
+            padding: 10px 15px; 
+            background: rgba(255, 255, 255, 0.95); 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            cursor: pointer;
+        }
+        
+        .footer { 
+            background: rgba(26, 26, 46, 0.95); 
+            color: white; 
+            padding: 30px; 
+            text-align: center; 
+            margin-top: 50px;
+            backdrop-filter: blur(5px);
+        }
+        
+        h2 {
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">PNK<span>Inmobiliaria</span></div>
+        <div>
+            <a href="index.html">Inicio</a>
+            <a href="login.html">Ingresar</a>
+            <a href="publicar.html">Publicar</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2 style="margin-bottom: 20px;">🏠 Propiedades en Chile</h2>
+        
+        <div class="filters">
+            <select id="filterTipo">
+                <option value="">Todos los tipos</option>
+                <option value="Casa">Casa</option>
+                <option value="Departamento">Departamento</option>
+                <option value="Terreno">Terreno</option>
+            </select>
+            <select id="filterOperacion">
+                <option value="">Venta/Arriendo</option>
+                <option value="Venta">Venta</option>
+                <option value="Arriendo">Arriendo</option>
+            </select>
+            <input type="text" id="filterUbicacion" placeholder="Comuna o ciudad">
+            <button onclick="buscarPropiedades()"><i class="fas fa-search"></i> Buscar</button>
+        </div>
+        
+        <div class="properties-grid" id="propiedadesGrid">
+            <div style="text-align: center; padding: 40px; background: rgba(255,255,255,0.9); border-radius: 15px;">Cargando propiedades...</div>
+        </div>
+        
+        <div class="pagination" id="pagination"></div>
+    </div>
+    
+    <div class="footer">
+        <p>PNK Inmobiliaria - El portal inmobiliario de Chile</p>
+        <p style="font-size: 12px; margin-top: 10px;">&copy; 2026 - Todos los derechos reservados</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        let paginaActual = 1;
+        
+        function buscarPropiedades(pagina = 1) {
+            paginaActual = pagina;
+            const tipo = document.getElementById('filterTipo').value;
+            const operacion = document.getElementById('filterOperacion').value;
+            const ubicacion = document.getElementById('filterUbicacion').value;
+            
+            fetch(`backend/listarPropiedades.php?pagina=${pagina}&tipo=${tipo}&operacion=${operacion}&ubicacion=${ubicacion}`)
+                .then(res => res.json())
+                .then(data => {
+                    const grid = document.getElementById('propiedadesGrid');
+                    if (data.data.length === 0) {
+                        grid.innerHTML = '<div style="text-align:center; padding:40px; background:rgba(255,255,255,0.9); border-radius:15px;">No se encontraron propiedades</div>';
+                        return;
+                    }
+                    grid.innerHTML = '';
+                    data.data.forEach(prop => {
+                        grid.innerHTML += `
+                            <div class="property-card" onclick="window.location.href='propiedad-detalle.html?id=${prop.id}'">
+                                <div class="property-image" style="background-image: url('${prop.imagen_principal || 'https://via.placeholder.com/400x200?text=PNK+Inmobiliaria'}')">
+                                    <div class="property-price">${prop.precio_uf ? 'UF ' + prop.precio_uf : '$' + Number(prop.precio_clp).toLocaleString()}</div>
+                                </div>
+                                <div class="property-info">
+                                    <div class="property-title">${prop.tipo || 'Propiedad'}</div>
+                                    <div class="property-location"><i class="fas fa-map-marker-alt"></i> ${prop.comuna || ''}, ${prop.provincia || ''}</div>
+                                    <div class="property-details">
+                                        <span><i class="fas fa-bed"></i> ${prop.dormitorios || 0} dorm</span>
+                                        <span><i class="fas fa-bath"></i> ${prop.banos || 0} baños</span>
+                                        <span><i class="fas fa-ruler-combined"></i> ${prop.area_terreno || 0} m²</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    // Paginación
+                    const pagination = document.getElementById('pagination');
+                    pagination.innerHTML = '';
+                    for (let i = 1; i <= data.total_paginas; i++) {
+                        pagination.innerHTML += `<button onclick="buscarPropiedades(${i})" style="background: ${i === paginaActual ? '#1a2a6c' : 'rgba(255,255,255,0.95)'}; color: ${i === paginaActual ? 'white' : '#333'}">${i}</button>`;
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+        
+        buscarPropiedades();
+    </script>
+</body>
+</html>
